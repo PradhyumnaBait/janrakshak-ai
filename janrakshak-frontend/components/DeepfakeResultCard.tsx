@@ -1,0 +1,134 @@
+"use client";
+
+import type { DeepfakeResponse } from "@/lib/api";
+import { AlertTriangle, BadgeCheck, HelpCircle } from "lucide-react";
+
+type Props = {
+  mode: "video" | "audio";
+  result: DeepfakeResponse | null;
+};
+
+function classifyResult(result: DeepfakeResponse | null) {
+  if (!result) return null;
+  const fakeScore = result.is_deepfake ? result.confidence : 1 - result.confidence;
+  const realScore = 1 - fakeScore;
+
+  let status: "real" | "fake" | "suspicious" = "suspicious";
+  if (fakeScore >= 0.75) status = "fake";
+  else if (realScore >= 0.75) status = "real";
+
+  return { fakeScore, realScore, status };
+}
+
+export function DeepfakeResultCard({ mode, result }: Props) {
+  const classified = classifyResult(result);
+  const label = mode === "video" ? "Video" : "Audio";
+
+  return (
+    <div className="glass-panel flex flex-col rounded-hero p-6 md:p-8">
+      <h2 className="font-sora text-[24px] font-semibold text-text-primary md:text-[28px]">
+        {label} authenticity result
+      </h2>
+      <p className="mt-2 text-sm text-text-muted">
+        View probability scores and a human-readable explanation. These are
+        indicative AI estimates and not legal verdicts.
+      </p>
+
+      {!result && (
+        <div className="mt-8 flex flex-1 flex-col items-center justify-center rounded-card border border-dashed border-text-light/30 bg-card-soft px-4 py-10 text-center text-sm text-text-muted">
+          <HelpCircle className="mb-3 h-6 w-6 text-text-light" />
+          Upload a file and run analysis to see deepfake scores here.
+        </div>
+      )}
+
+      {result && classified && (
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center justify-between rounded-card bg-card-soft px-4 py-3">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-text-light">
+                Overall verdict
+              </div>
+              <div className="mt-1 text-sm text-text-secondary">
+                Based on AI analysis of visual/audio patterns.
+              </div>
+            </div>
+            <span
+              className={`rounded-pill px-3 py-1 text-xs font-semibold ${
+                classified.status === "real"
+                  ? "bg-status-success/10 text-status-success"
+                  : classified.status === "fake"
+                    ? "bg-status-danger/10 text-status-danger"
+                    : "bg-status-warning/10 text-status-warning"
+              }`}
+            >
+              {classified.status === "real"
+                ? "Likely Real"
+                : classified.status === "fake"
+                  ? "Likely Fake"
+                  : "Suspicious"}
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
+                <span>Fake probability</span>
+                <span>{Math.round(classified.fakeScore * 100)}%</span>
+              </div>
+              <div className="mt-1 h-2 rounded-full bg-card-softer">
+                <div
+                  className="h-2 rounded-full bg-status-danger"
+                  style={{ width: `${Math.round(classified.fakeScore * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
+                <span>Real probability</span>
+                <span>{Math.round(classified.realScore * 100)}%</span>
+              </div>
+              <div className="mt-1 h-2 rounded-full bg-card-softer">
+                <div
+                  className="h-2 rounded-full bg-status-success"
+                  style={{ width: `${Math.round(classified.realScore * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-xs font-medium text-text-secondary">
+                <span>Model confidence</span>
+                <span>{Math.round(result.confidence * 100)}%</span>
+              </div>
+              <div className="mt-1 h-2 rounded-full bg-card-softer">
+                <div
+                  className="h-2 rounded-full bg-accent-primary"
+                  style={{ width: `${Math.round(result.confidence * 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-card bg-card-soft px-4 py-3 text-sm text-text-secondary">
+            {result.details}
+          </div>
+
+          <div className="flex items-start gap-3 rounded-card bg-deep-darker/5 p-3 text-xs text-text-muted">
+            {classified.status === "fake" ? (
+              <AlertTriangle className="mt-0.5 h-4 w-4 text-status-danger" />
+            ) : (
+              <BadgeCheck className="mt-0.5 h-4 w-4 text-status-success" />
+            )}
+            <p>
+              These scores are generated by AI and should be combined with human
+              judgment and official verification, especially for sensitive
+              civic content.
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+

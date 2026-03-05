@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": "cd janrakshak-frontend && npm install && npm run build",
+  "outputDirectory": "janrakshak-frontend/.next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@next_public_api_url"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "janrakshak-frontend/$1"
+    }
+  ]
+}

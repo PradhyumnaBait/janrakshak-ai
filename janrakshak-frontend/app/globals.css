@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #eef0f6;
+  --foreground: #111827;
+}
+
+body {
+  background: #eef0f6;
+  color: #111827;
+  font-family: Helvetica, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
+}
+
+.gradient-bg {
+  background: radial-gradient(circle at top left, #e6e8f2, #eef0f6),
+    linear-gradient(135deg, #d8dbea, #c9cde3);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(12px);
+}
+
+.glow-ring {
+  box-shadow: 0 0 60px rgba(108, 99, 255, 0.15),
+    0 0 120px rgba(91, 91, 214, 0.2);
+}
+
