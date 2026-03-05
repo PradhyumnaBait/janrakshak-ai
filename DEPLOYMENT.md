@@ -30,6 +30,10 @@
 
 ## Step 2: Deploy Frontend to Vercel
 
+### ✅ Correct Setup for Vercel
+
+**IMPORTANT: Root Directory must be set to `janrakshak-frontend`**
+
 1. **Go to Vercel:**
    - Visit https://vercel.com
    - Sign up with GitHub account
@@ -40,67 +44,102 @@
    - Find and select `janrakshak-ai`
    - Click "Import"
 
-3. **Configure Build Settings:**
-   - Framework: Next.js
-   - Root Directory: `janrakshak-frontend`
-   - Build Command: `npm run build`
-   - Output Directory: `.next`
+3. **Critical: Set Root Directory:**
+   - **Root Directory:** Change to `janrakshak-frontend` ⚠️ (Default is `.`, change it!)
+   - **Framework:** Next.js (auto-detected)
+   - **Build Command:** Leave empty (uses default)
+   - **Output Directory:** Leave empty (uses default)
 
 4. **Add Environment Variables:**
    - Click "Environment Variables"
-   - Add: `NEXT_PUBLIC_API_URL` = `https://your-backend-url`
-   - (You'll update this after deploying backend)
+   - Name: `NEXT_PUBLIC_API_URL`
+   - Value: (Leave empty for now, update after backend is deployed)
+   - Add for both Production and Preview
 
 5. **Deploy:**
    - Click "Deploy"
    - Wait 2-3 minutes
-   - Your app is live! (vercel gives you a URL like https://janrakshak-ai.vercel.app)
+   - You'll get a URL like: https://janrakshak-ai.vercel.app
+
+### ❌ Common Errors & Fixes
+
+**Error: "Command failed: `npm run build`"**
+- Solution: Make sure Root Directory is set to `janrakshak-frontend`
+- Go to Settings > General > Root Directory
+- Change from `.` to `janrakshak-frontend`
+- Redeploy
+
+**Error: "No Production Deployment"**
+- Solution: Make sure you set the root directory BEFORE deploying
+- If already deployed, go to Redeploy in Deployments page after fixing root directory
 
 ---
 
-## Step 3: Deploy Backend to Render.com (Free)
+## Step 3: Deploy Backend to Render.com (Free - Recommended)
 
-### Option 1: Render.com (Easiest - $0/month)
+### ✅ Render.com Step-by-Step
 
-1. **Go to Render:**
+1. **Create Render Account:**
    - Visit https://render.com
-   - Sign up with GitHub
-   - Click "New +"
-   - Select "Web Service"
+   - Click "Sign up"
+   - Click "Continue with GitHub"
+   - Authorize GitHub access
+   - Choose plan (Free tier is fine)
 
-2. **Connect GitHub:**
-   - Select "Connect GitHub account"
-   - Find `janrakshak-ai` repository
-   - Click "Connect"
+2. **Deploy Backend:**
+   - In Render dashboard, click "New +"
+   - Click "Web Service"
+   - Click "Connect GitHub account" (if not already connected)
+   - Find `janrakshak-ai` repo and click "Connect"
 
-3. **Configure Service:**
-   - **Name:** `janrakshak-ai-backend`
-   - **Environment:** Python 3
-   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+3. **Fill Service Details:**
+   - **Name:** `janrakshak-ai-backend` 
+   - **Environment:** `Python 3`
+   - **Region:** Choose closest to you
    - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
 
 4. **Add Environment Variables:**
-   ```
-   DATABASE_URL = sqlite:///./civic_ai_shield.db
-   JWT_SECRET_KEY = [generate-random-secret-key]
-   GEMINI_API_KEY = [your-gemini-api-key]
-   CORS_ALLOW_ORIGINS = https://janrakshak-ai.vercel.app
-   ```
+   - Scroll down to "Environment"
+   - Click "Add Environment Variable"
+   - Add each one (Click "+" to add more):
+     ```
+     DATABASE_URL = sqlite:///./civic_ai_shield.db
+     JWT_SECRET_KEY = your-secret-key-here
+     GEMINI_API_KEY = your-gemini-key-here
+     CORS_ALLOW_ORIGINS = https://janrakshak-ai.vercel.app
+     ```
 
 5. **Deploy:**
    - Click "Create Web Service"
-   - Wait 5-10 minutes for deployment
-   - You'll get a URL like: https://janrakshak-ai-backend.onrender.com
+   - Go get coffee ☕ (5-10 min deploy time)
+   - When done, you'll see a URL like: `https://janrakshak-ai-backend.onrender.com`
+   - Copy this URL
 
-6. **Update Vercel Environment:**
-   - Go back to Vercel
-   - Go to Settings > Environment Variables
-   - Update: `NEXT_PUBLIC_API_URL` = `https://janrakshak-ai-backend.onrender.com`
-   - Redeploy (Vercel > Deployments > Redeploy)
+6. **Update Frontend:**
+   - Go to Vercel dashboard
+   - Project > Settings > Environment Variables
+   - Find `NEXT_PUBLIC_API_URL` and update value to your Render URL
+   - Click "Save"
+   - Deployments > Redeploy on main (or wait for auto-redeploy)
+
+### ❌ Common Render Errors & Fixes
+
+**Error: "Build failed"**
+- Make sure `requirements.txt` exists in root directory
+- Check Render logs (Logs tab) for exact error
+
+**Error: "Service failed to start"**
+- Check Start Command is: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Check all environment variables are set
+- View logs to see exact error message
+
+**Error: "Port binding error"**
+- Make sure Start Command uses `$PORT` variable (Render assigns dynamic port)
 
 ---
 
-### Option 2: Railway.app (Also Free)
+### Option 2: Railway.app (Alternative)
 
 1. **Go to Railway:**
    - Visit https://railway.app
@@ -108,18 +147,18 @@
    - Click "New Project"
    - Select "Deploy from GitHub repo"
 
-2. **Select Repository:**
-   - Choose `janrakshak-ai`
+2. **Select & Deploy:**
+   - Choose `janrakshak-ai` repository
    - Click "Deploy Now"
 
 3. **Configure:**
-   - Add environment variables (same as above)
-   - Railway will auto-detect Python and install requirements
+   - Add environment variables (same as Render above)
+   - Railway auto-detects Python
 
-4. **Get URL:**
-   - Click on your service
-   - Copy the domain URL
-   - Update Vercel's `NEXT_PUBLIC_API_URL`
+4. **Get URL & Update:**
+   - Click on your service > Domain
+   - Copy domain URL (e.g., https://janrakshak-ai-prod.up.railway.app)
+   - Go to Vercel > Update `NEXT_PUBLIC_API_URL`
 
 ---
 
