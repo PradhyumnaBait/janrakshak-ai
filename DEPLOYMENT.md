@@ -14,7 +14,7 @@
    ```bash
    cd "c:\Users\Pradhyumna\Downloads\janrakshak ai\janrakshak ai"
    
-   git remote add origin https://github.com/YOUR_USERNAME/janrakshak-ai.git
+   git remote add origin https://github.com/PradhyumnaBait/janrakshak-ai.git
    git branch -M main
    git push -u origin main
    ```
@@ -22,7 +22,7 @@
    Replace `YOUR_USERNAME` with your GitHub username.
 
 3. **Verify on GitHub:**
-   - Go to https://github.com/YOUR_USERNAME/janrakshak-ai
+   - Go to https://github.com/PradhyumnaBait/janrakshak-ai
    - You should see all your code there
    - `.env` file should NOT be visible (.gitignore protects it)
 
