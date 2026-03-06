@@ -4,5 +4,7 @@ sqlalchemy
 psycopg2-binary
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt
 pydantic[email]
+python-multipart
 requests
